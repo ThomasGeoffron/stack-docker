@@ -1,8 +1,31 @@
 version: "3"
 services:
   front:
+    build: ./front
+    expose:
+      - 3000
+    environment:
+      - REACT_APP_PORT=3000
+    links:
+      - back
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front/www:/app/www
+    command: npm run start
 
   back:
+    build: ./back
+    expose:
+      - 8080
+    environment:
+      API_HOST: "http://localhost:3000/"
+      APP_SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./back/www:/app/www
+    command: npm run dev
 
   database:
     image: mysql:5.7
@@ -30,25 +53,49 @@ services:
     image: library/redis:6.2.4-alpine
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
+    image: library/elasticsearch:7.13.3
+    container_name: elasticsearch
     environment:
-      cluster.name: "docker-cluster"
-      ES_JAVA_OPT: "-Xmx256m -Xms256m"
-    volumes:
-      - esdata1:/usr/share/elasticsearch/data
+      - "discovery.type=single-node"
     ports:
-      - 9200:9200
+      - "9200:9200"
     networks:
       - elk
 
   logstash:
+    image: library/logstash:7.13.3
+    container_name: logstash
+    ports:
+      - "9600:9600"
+    volumes:
+      - .\logstash:/usr/share/logstash/pipeline
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk
 
   kibana:
+    image: library/kibana:7.13.3
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk
 
 
 networks:
   elk:
     driver: bridge
+
+volumes:
+  esdata:
+    driver: local
 
 
 
