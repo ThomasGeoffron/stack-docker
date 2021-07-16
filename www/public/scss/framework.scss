@@ -1,0 +1,50 @@
+* {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+body {
+  font-family: sans-serif;
+
+  /*background: red;*/
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.hidden {
+  display: none;
+}
+
+/* TELEPHONE */
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+@for $i from 1 through 12 {
+  .col-#{$i}-mob {
+    grid-column: span $i;
+  }
+}
+
+/* TABLETTE */
+@media screen and (min-width: 768px) {
+
+  @for $i from 1 through 12 {
+    .col-#{$i}-tab {
+      grid-column: span $i;
+    }
+  }
+}
+
+/* ECRAN ORDINATEUR */
+@media screen and (min-width: 1280px) {
+
+  @for $i from 1 through 12 {
+    .col-#{$i}-lap {
+      grid-column: span $i;
+    }
+  }
+}
