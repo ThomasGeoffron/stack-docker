@@ -1,8 +1,31 @@
 version: "3"
 services:
   front:
+    build: ./front
+    expose:
+      - 3000
+    environment:
+      - REACT_APP_PORT=3000
+    links:
+      - back
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front/www:/app/www
+    command: npm run start
 
   back:
+    build: ./back
+    expose:
+      - 8080
+    environment:
+      API_HOST: "http://localhost:3000/"
+      APP_SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./back/www:/app/www
+    command: npm run dev
 
   database:
     image: mysql:5.7
@@ -37,7 +60,7 @@ services:
     volumes:
       - esdata1:/usr/share/elasticsearch/data
     ports:
-      - 9200:9200
+      - "9200:9200"
     networks:
       - elk
 
