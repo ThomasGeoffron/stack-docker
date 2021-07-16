@@ -1,0 +1,54 @@
+version: "3"
+services:
+  front:
+
+  back:
+
+  database:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: dockerstack
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./db_data:/var/lib/mysql
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - database
+    ports:
+      - 8888:80
+    environment:
+      - PMA_ARBITRARY=1
+
+  redis:
+    image: library/redis:6.2.4-alpine
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
+    environment:
+      cluster.name: "docker-cluster"
+      ES_JAVA_OPT: "-Xmx256m -Xms256m"
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elk
+
+  logstash:
+
+  kibana:
+
+
+networks:
+  elk:
+    driver: bridge
+
+
+
