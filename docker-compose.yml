@@ -2,7 +2,7 @@ version: "3"
 services:
   front:
     image: node:14
-    container_name: node-sass
+    container_name: node_sass
     volumes:
       - ./www/public:/var/www/html/public/
       - ./www/package.json:/var/www/html/package.json
@@ -32,10 +32,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: dockerstack
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PWD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PWD}
     volumes:
       - ./db_data:/var/lib/mysql
     restart: always
