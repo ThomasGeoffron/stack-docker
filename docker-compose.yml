@@ -25,7 +25,9 @@ services:
     depends_on:
       - database
     links:
-      - redis
+      - redis:redis
+    networks: 
+      - elk
 
 
   database:
@@ -55,6 +57,12 @@ services:
   redis:
     image: library/redis:6.2.4-alpine
     container_name: redis
+    ports: 
+      - "6379:6379"
+    networks: 
+      - elk
+    volumes: 
+      - ./server/redis.conf:/redis.conf
 
   elasticsearch:
     image: library/elasticsearch:7.13.3
@@ -93,10 +101,19 @@ services:
       - elk
 
   smtp:
-    image: mailhog/mailhog
+    build: 
+      context: ./mailer
+      dockerfile: Dockerfile
+      args: 
+        HOSTNAME: ${MH_HOSTNAME}
+        SMTP_PORT: ${MH_SMTP_PORT}
+        API_PORT: ${MH_API_PORT}
+        UI_PORT: ${MH_UI_PORT}
+        STORAGE: ${MH_STORAGE}
     ports:
       - 1025:1025
       - 8025:8025
+      
 
 networks:
   elk:
