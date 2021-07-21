@@ -24,6 +24,8 @@ services:
       - ./server/php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - database
+    links:
+      - redis
 
 
   database:
